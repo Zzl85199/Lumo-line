@@ -1,0 +1,255 @@
+/* ═══════════ Lumo・幫你顧 — 設計 tokens ═══════════
+   主色 湖水綠 #0e8a6d、輔色 暖光黃 #ffc53d、明亮清爽
+   display 字體:Huninn(粉圓體,親切圓潤,呼應「幫小店顧」的手感)
+   body 字體:Noto Sans TC                                    */
+:root {
+  --green: #0e8a6d;
+  --green-deep: #0a6a54;
+  --green-soft: #e3f3ee;
+  --yellow: #ffc53d;
+  --yellow-soft: #fff3d6;
+  --ink: #1e2f29;
+  --muted: #5d7168;
+  --bg: #f7fbf9;
+  --card: #ffffff;
+  --line-green: #06c755; /* LINE 品牌綠,只用在對話 demo */
+  --radius: 16px;
+  --shadow: 0 6px 24px rgba(14, 138, 109, 0.10);
+  --font-display: 'Huninn', 'Noto Sans TC', sans-serif;
+  --font-body: 'Noto Sans TC', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.7;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; line-height: 1.3; }
+a { color: var(--green-deep); }
+:focus-visible { outline: 3px solid var(--yellow); outline-offset: 2px; border-radius: 4px; }
+img, iframe { max-width: 100%; }
+
+.page { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* ── 按鈕 ── */
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font: 500 1rem var(--font-body);
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-line { background: var(--green); color: #fff; box-shadow: 0 4px 14px rgba(14,138,109,0.35); }
+.btn-line:hover { background: var(--green-deep); }
+.btn-ghost { background: transparent; color: var(--green-deep); border-color: var(--green); }
+.btn-sm { padding: 8px 16px; font-size: 0.9rem; }
+.btn-block { display: block; width: 100%; }
+.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+/* ── 頂欄 ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0; gap: 12px; flex-wrap: wrap;
+}
+.brand {
+  font: 400 1.3rem var(--font-display);
+  color: var(--ink); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.brand-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--yellow), var(--green));
+}
+.topnav { display: flex; align-items: center; gap: 18px; }
+.topnav a:not(.btn) { text-decoration: none; color: var(--muted); font-size: 0.95rem; }
+.topnav a:not(.btn):hover { color: var(--green-deep); }
+
+/* ── Hero ── */
+.hero { display: grid; gap: 36px; padding: 32px 0 56px; align-items: center; }
+.eyebrow {
+  display: inline-block; background: var(--yellow-soft); color: #8a6410;
+  padding: 4px 14px; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.05em;
+}
+.hero h1 { font-size: clamp(2rem, 6vw, 3.1rem); margin: 14px 0 12px; }
+.hero h1 em { font-style: normal; color: var(--green); }
+.lead { color: var(--muted); font-size: 1.05rem; max-width: 34em; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+
+/* ── 手機 LINE 對話 demo(招牌元素)── */
+.phone-wrap { display: flex; justify-content: center; }
+.phone {
+  width: min(330px, 88vw);
+  background: #8cabd8; /* LINE 聊天室的經典底色 */
+  border: 10px solid #1f2933;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: var(--shadow), 0 24px 48px rgba(31, 41, 51, 0.18);
+}
+.phone-head {
+  display: flex; align-items: center; gap: 10px;
+  background: #273240; color: #fff; padding: 12px 14px;
+}
+.phone-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--yellow); color: var(--ink);
+  display: grid; place-items: center;
+  font: 400 1.1rem var(--font-display);
+}
+.phone-head strong { display: block; font-size: 0.95rem; line-height: 1.2; }
+.phone-head small { color: #aebccf; font-size: 0.72rem; }
+.phone-body {
+  height: 320px; padding: 14px 12px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.bubble {
+  max-width: 78%;
+  padding: 9px 13px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  white-space: pre-line;
+  animation: pop 0.25s ease;
+}
+.bubble.bot { background: #fff; align-self: flex-start; border-top-left-radius: 4px; }
+.bubble.user { background: var(--line-green); color: #fff; align-self: flex-end; border-top-right-radius: 4px; }
+.bubble.typing { display: inline-flex; gap: 5px; padding: 12px 14px; }
+.bubble.typing span {
+  width: 7px; height: 7px; border-radius: 50%; background: #b9c4ce;
+  animation: blink 1s infinite;
+}
+.bubble.typing span:nth-child(2) { animation-delay: 0.15s; }
+.bubble.typing span:nth-child(3) { animation-delay: 0.3s; }
+.phone-foot { background: #f2f4f6; padding: 10px 14px; }
+.fake-input {
+  display: block; background: #fff; border-radius: 999px;
+  padding: 8px 14px; color: #9aa6b0; font-size: 0.82rem;
+}
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .bubble { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ── 區塊 ── */
+.section { padding: 56px 0; }
+.section-tint {
+  background: var(--green-soft);
+  margin: 0 -20px; padding-left: 20px; padding-right: 20px;
+  border-radius: 24px;
+}
+.section-title {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin: 0 0 28px;
+}
+.section-title::after {
+  content: ''; display: block; width: 56px; height: 5px;
+  background: var(--yellow); border-radius: 3px; margin-top: 10px;
+}
+
+/* ── 服務 ── */
+.services { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.service-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow);
+}
+.service-icon { font-size: 1.6rem; }
+.service-card h3 { margin: 8px 0 4px; font-size: 1.1rem; }
+.service-card p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+
+/* ── 方案 ── */
+.plans { display: grid; gap: 18px; }
+.plan-card {
+  position: relative;
+  background: var(--card); border-radius: var(--radius);
+  padding: 26px 22px; box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  display: flex; flex-direction: column;
+}
+.plan-card.featured { border-color: var(--yellow); }
+.plan-badge {
+  position: absolute; top: -12px; right: 18px;
+  background: var(--yellow); color: var(--ink);
+  padding: 3px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 500;
+}
+.plan-card h3 { margin: 0; font-size: 1.35rem; color: var(--green-deep); }
+.plan-tagline { color: var(--muted); font-size: 0.92rem; margin: 6px 0 12px; min-height: 2.8em; }
+.plan-price { font: 400 1.7rem var(--font-display); margin: 0 0 14px; }
+.plan-price small { font-size: 0.9rem; color: var(--muted); }
+.plan-features { list-style: none; margin: 0 0 20px; padding: 0; flex: 1; }
+.plan-features li {
+  padding: 7px 0 7px 26px; position: relative;
+  border-bottom: 1px dashed #dcebe5; font-size: 0.92rem;
+}
+.plan-features li::before {
+  content: '✓'; position: absolute; left: 2px; color: var(--green); font-weight: 700;
+}
+.plans-note { margin-top: 22px; color: var(--muted); font-size: 0.92rem; }
+
+/* ── 聯絡 ── */
+.contact-grid { display: grid; gap: 20px; }
+.contact-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 24px; box-shadow: var(--shadow);
+}
+.contact-card dl { margin: 0 0 18px; }
+.contact-card dl div { display: flex; gap: 14px; padding: 8px 0; border-bottom: 1px dashed #dcebe5; }
+.contact-card dt { color: var(--muted); min-width: 88px; font-size: 0.92rem; }
+.contact-card dd { margin: 0; font-weight: 500; }
+.map-wrap { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); min-height: 280px; }
+.map-wrap iframe { width: 100%; height: 100%; min-height: 280px; border: 0; display: block; }
+
+.footer { padding: 32px 0 40px; color: var(--muted); font-size: 0.88rem; text-align: center; }
+
+/* ── LIFF 表單頁 ── */
+.liff-page { max-width: 520px; margin: 0 auto; padding: 24px 18px 48px; }
+.liff-status { text-align: center; color: var(--muted); padding: 48px 0 8px; }
+.liff-status-sub { text-align: center; color: var(--muted); font-size: 0.9rem; }
+.liff-form h1, .liff-done h1 { font-size: 1.6rem; margin: 0 0 6px; color: var(--green-deep); }
+.liff-hello { color: var(--muted); margin: 0 0 20px; }
+.liff-form label { display: block; margin-bottom: 16px; font-size: 0.95rem; font-weight: 500; }
+.req {
+  font-weight: 500; font-size: 0.75rem; color: #b4530a;
+  background: var(--yellow-soft); border-radius: 6px; padding: 1px 7px; margin-left: 4px;
+}
+.liff-form input, .liff-form select, .liff-form textarea {
+  display: block; width: 100%; margin-top: 6px;
+  padding: 11px 13px; border-radius: 12px;
+  border: 1.5px solid #cfe2da; background: #fff;
+  font: 400 1rem var(--font-body); color: var(--ink);
+}
+.liff-form input:focus, .liff-form select:focus, .liff-form textarea:focus {
+  border-color: var(--green); outline: none;
+  box-shadow: 0 0 0 3px rgba(14, 138, 109, 0.15);
+}
+.form-error {
+  background: #fdecec; color: #a33; border-radius: 10px;
+  padding: 10px 14px; font-size: 0.92rem;
+}
+.liff-done { text-align: center; padding-top: 40px; display: grid; gap: 12px; }
+.liff-done-icon {
+  width: 64px; height: 64px; margin: 0 auto; border-radius: 50%;
+  background: var(--green); color: #fff; font-size: 2rem;
+  display: grid; place-items: center;
+}
+
+/* ── 平板以上 ── */
+@media (min-width: 720px) {
+  .hero { grid-template-columns: 1.15fr 1fr; padding-top: 48px; }
+  .services { grid-template-columns: repeat(2, 1fr); }
+  .plans { grid-template-columns: repeat(3, 1fr); }
+  .contact-grid { grid-template-columns: 1fr 1.2fr; }
+}
+@media (min-width: 980px) {
+  .services { grid-template-columns: repeat(3, 1fr); }
+  .services .service-card:nth-child(4) { grid-column: span 1; }
+}

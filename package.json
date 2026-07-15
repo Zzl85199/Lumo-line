@@ -1,23 +1,24 @@
 {
-  "name": "lumo-line",
+  "name": "lumo-site",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:worker": "wrangler dev",
     "build": "vite build",
-    "preview": "npm run build && npx wrangler pages dev dist",
-    "richmenu": "node scripts/setup-richmenu.mjs"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
-    "@line/liff": "^2.26.0",
-    "@supabase/supabase-js": "^2.47.0",
+    "@line/liff": "^2.26.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.30.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11"
+    "vite": "^6.3.5",
+    "wrangler": "^4.24.0"
   }
 }

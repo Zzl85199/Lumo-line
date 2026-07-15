@@ -1,0 +1,25 @@
+{
+  // Lumo・幫你顧 — 官網 + LINE bot + LIFF 表單,單一 Worker 架構
+  // 前端靜態資產由 Workers static assets 服務,/api/* 走 Worker
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lumo-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-07-15",
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  // 非機密設定放 vars;機密一律用 `wrangler secret put`(見 README)
+  "vars": {
+    "SUPABASE_URL": "https://YOUR-PROJECT-REF.supabase.co"
+  }
+  // 機密(不要寫在這裡,列出來只是備忘):
+  //   LINE_CHANNEL_SECRET        Messaging API channel secret(簽章驗證用)
+  //   LINE_CHANNEL_ACCESS_TOKEN  Messaging API channel access token(回覆/推播用)
+  //   LIFF_CHANNEL_ID            LIFF 所屬 LINE Login channel 的 Channel ID(驗 access token 用)
+  //   ADMIN_LINE_USER_ID         你本人的 LINE userId(收諮詢通知)
+  //   SUPABASE_ANON_KEY          Supabase anon key(只讀上架方案)
+  //   SUPABASE_SERVICE_ROLE_KEY  Supabase service role key(寫入諮詢單,絕不外流到前端)
+}

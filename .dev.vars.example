@@ -1,0 +1,19 @@
+# ── Worker 機密(本機 wrangler dev 用;正式環境用 `wrangler secret put <名稱>`)──
+# 複製成 .dev.vars 後填值。.dev.vars 已加入 .gitignore,絕不進版控。
+
+# LINE Developers Console → Messaging API channel
+LINE_CHANNEL_SECRET=
+LINE_CHANNEL_ACCESS_TOKEN=
+
+# LIFF 所屬的 LINE Login channel 的「Channel ID」(注意:不是 LIFF ID)
+# 用來驗證 LIFF access token 的 client_id 是否吻合
+LIFF_CHANNEL_ID=
+
+# 你本人的 LINE userId(U 開頭 33 碼)。最快取得方式:
+# 部署後自己加官方帳號好友、隨便傳訊息,看 Worker log 裡 event.source.userId
+ADMIN_LINE_USER_ID=
+
+# Supabase → Project Settings → API
+SUPABASE_URL=https://YOUR-PROJECT-REF.supabase.co
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=

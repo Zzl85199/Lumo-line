@@ -1,8 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// 只有 VITE_ 開頭的環境變數會被打包進前端,
-// LINE_CHANNEL_SECRET 等後端金鑰絕不會進到瀏覽器端程式碼。
+// 本機開發:vite (5173) 服務前端,/api/* 代理到 wrangler dev (8787)
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8787',
+    },
+  },
+  build: {
+    outDir: 'dist',
+  },
+});
