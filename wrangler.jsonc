@@ -2,7 +2,7 @@
   // Lumo・幫你顧 — 官網 + LINE bot + LIFF 表單,單一 Worker 架構
   // 前端靜態資產由 Workers static assets 服務,/api/* 走 Worker
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "lumo-site",
+  "name": "lumo",
   "main": "worker/index.js",
   "compatibility_date": "2026-07-15",
   "assets": {
