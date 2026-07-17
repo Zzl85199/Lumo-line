@@ -13,7 +13,12 @@
   },
   // 非機密設定放 vars;機密一律用 `wrangler secret put`(見 README)
   "vars": {
-    "SUPABASE_URL": "https://YOUR-PROJECT-REF.supabase.co"
+    "SUPABASE_URL": "https://eeuraptputbvdhfijnik.supabase.co"
+  },
+  // 每天打一次 Supabase,避免 Free 專案「一週無流量自動暫停」導致 bot/表單失效
+  // 時間為 UTC,"0 3 * * *" = 每天 UTC 03:00 = 台灣時間 11:00
+  "triggers": {
+    "crons": ["0 3 * * *"]
   }
   // 機密(不要寫在這裡,列出來只是備忘):
   //   LINE_CHANNEL_SECRET        Messaging API channel secret(簽章驗證用)

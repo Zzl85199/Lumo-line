@@ -35,6 +35,24 @@ export default {
       return json({ error: 'internal_error' }, 500);
     }
   },
+  
+  // Cron Trigger(見 wrangler.jsonc 的 triggers.crons)
+  // 目的:每天對 Supabase 打一次真正的查詢,避免 Free 專案「一週無流量自動暫停」
+  // 導致 bot 撈方案 / LIFF 表單寫入全部失效。不回傳任何東西給誰,失敗只記 log。
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(
+      fetch(`${env.SUPABASE_URL}/rest/v1/service_plans?select=id&limit=1`, {
+        headers: {
+          apikey: env.SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${env.SUPABASE_ANON_KEY}`,
+        },
+      })
+        .then((res) => {
+          if (!res.ok) console.error('supabase keepalive ping failed:', res.status);
+        })
+        .catch((e) => console.error('supabase keepalive ping error:', e))
+    );
+  },
 };
 
 /* ═══════════════════════════════ LINE Webhook ═══════════════════════════════ */
