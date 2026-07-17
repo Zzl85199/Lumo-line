@@ -81,6 +81,7 @@ npm run dev          # vite 跑在 :5173,/api/* 自動代理到 :8787
 
 **Chat 和 Webhooks 兩個開關不能同時開**,這是官方文件明講的限制,關掉 Chat 之後你就不能再用後台聊天畫面手動回客人,全部交給 Bot 處理(本專案的設計本來就是走全自動路線)。
 
+
 ### LIFF(表單用)
 1. 同一個 Provider 下建立 **LINE Login** channel。
 2. 該 channel → LIFF 分頁 → Add:
