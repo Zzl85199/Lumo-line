@@ -1,4 +1,4 @@
-# Lumo・幫你顧 — 官網 + LINE Bot + LIFF 諮詢表單
+# Lumo・幫你顧
 
 單一 Cloudflare Worker 架構:Workers static assets 服務前端(Vite + React 建置到 `dist/`),
 同一個 Worker(`worker/index.js`)處理 API,以 URL 路徑分流。
