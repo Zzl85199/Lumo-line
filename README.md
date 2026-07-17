@@ -1,4 +1,4 @@
-# Lumo・幫你顧
+# Lumo・幫你顧 — 官網 + LINE Bot + LIFF 諮詢表單
 
 單一 Cloudflare Worker 架構:Workers static assets 服務前端(Vite + React 建置到 `dist/`),
 同一個 Worker(`worker/index.js`)處理 API,以 URL 路徑分流。
@@ -211,6 +211,27 @@ Supabase Free 專案「一週沒有流量會自動暫停」,暫停後 `/api/plan
 
 商業上仍建議:報價單清楚寫「資料庫方案:Free(需搭配保活機制,仍有極端情況風險)/ Pro(無休眠,US$25/月起)」,
 讓客戶自己選,正式簽約上線的案子不管客戶選哪個方案都建議保留這個 Cron keepalive 當保底。
+
+## 8. 除錯地圖:症狀 → 原因 → 解法(這次部署真的踩過的坑)
+
+這張表照「你會看到的症狀」排序,遇到問題先往下找長得像的那一列,比從頭猜原因快很多。
+
+| 症狀 | 真正原因 | 解法 |
+|---|---|---|
+| Cloudflare 建 Worker 精靈裡找不到「建立 Pages」選項,或建了也不能用 | Cloudflare 已不對新帳號開放建立 Pages | 一律用 **Workers + static assets**(`wrangler.jsonc` 的 `assets.directory`),不要找 Pages |
+| 卡在 Dashboard「Create a Worker → Create and deploy」畫面不知道下一步 | 這是 Git 整合部署精靈,填好 Build/Deploy command 直接按 **Deploy** 就對,細節之後在 Settings 補 | 先 Deploy 建出 Worker,再回 Settings 補環境變數(見下面兩列) |
+| Build 流程不知道 `VITE_LIFF_ID` 這種前端變數要放哪 | Cloudflare 把「建置期」和「執行期」變數分成**兩個獨立分頁**,名稱都叫 Variables and secrets,很容易搞混 | **Settings → Build → Variables and secrets** 放 `VITE_` 開頭的;**Settings → Runtime → Variables and secrets** 放 LINE/Supabase 那六條 secrets |
+| 加了 `VITE_LIFF_ID` 到 Build,手機還是顯示「尚未設定 VITE_LIFF_ID」 | 改 dashboard 設定**不會**自動觸發重新 build;點「Retry deployment」有時也只是重跑舊的 build 產物,不一定真的重新跑 `npm run build` | 推一個新 commit(哪怕是空 commit `git commit --allow-empty`)強制觸發真正的 build;在 Deployments/Version History 確認新版本**帶 `main` 分支標籤、來自 GitHub push**,不是單純 `by Dashboard` 的設定快照 |
+| Dashboard 精靈裡填的「Project name」跟後來網址前綴對不起來 | Project name 只是 Git 整合的顯示名稱,跟 Worker 實際名稱是兩件事 | 真正的 Worker 名稱 / 網址前綴以 `wrangler.jsonc` 的 `"name"` 為準(例如 `lumo` → `lumo.<帳號>.workers.dev`) |
+| LINE Developers Console 按 Webhook 的 **Verify** 出現 **401 Unauthorized** | `LINE_CHANNEL_SECRET` 沒填、填錯,或跟 `LINE_CHANNEL_ACCESS_TOKEN` 兩個值填反了 | Channel secret 在 **Basic settings** 分頁、Channel access token 在 **Messaging API** 分頁,確認沒填反;回 Cloudflare Runtime 重新設定該 secret 後再按一次 Verify |
+| 對 bot 傳關鍵字(如「諮詢」),完全沒有任何回應,已讀不回 | LINE Official Account Manager 的「回應設定」沒切到 webhook 模式:Chat 開著、自動回應訊息開著,把你的 webhook 攔截掉了 | 去 **manager.line.biz → 設定 → 回應設定**:Chat 關、Webhooks 開、加入好友歡迎訊息關、自動回應訊息關(見第 3 節表格) |
+| bot 有正常回覆,但後面又多跳出一句「Unfortunately, this account isn't set up to reply directly to messages」 | **Chat** 和 **Webhooks** 兩個開關同時開啟,LINE 官方文件明講這兩個不能並存 | 把 **Chat 關掉**,只留 Webhooks 開著(關掉後台就不能再手動聊天,交給 bot 全自動處理) |
+| bot 回覆裡提到「請點下方選單的『預約諮詢』」,但聊天室底下根本沒有選單 | 圖文選單(Rich Menu)**不是程式碼自動產生的**,回覆文字只是寫死的提示,選單本身要手動建立 | manager.line.biz → 圖文選單 → 上傳圖 → 每格設定 Action(Link 開 LIFF / Text 送關鍵字)→ 記得 **Set as default** |
+| 點圖文選單「預約諮詢」跳出 **400** 或「無法開啟表單:尚未設定 VITE_LIFF_ID」 | 同上面「VITE_LIFF_ID 放錯分頁」或「沒有真的重新 build」兩種情況疊加,也可能 LIFF 的 **Endpoint URL** 沒填對 | 依序檢查:Build 變數位置對不對 → 有沒有真的觸發新 build → LIFF Endpoint URL 是不是 `https://<你的網域>/liff` |
+| LIFF 表單填完送出,顯示「送出失敗,請稍後再試」,Cloudflare Observability 一開始看起來「No events found」 | Observability 預設**不會即時刷新**,看起來沒事件不代表真的沒收到請求 | 進 Observability 先點右上角 **Live** 再送表單,才抓得到即時那一筆;點開該筆事件看 `response.status` 和有沒有 `console.error` 內容 |
+| LIFF 表單送出後端回 **401**,但 Authorization header 明明有帶值 | 這個 401 是伺服器端驗證 LIFF token 那段失敗,最常見是 `LIFF_CHANNEL_ID` **填成了整組 LIFF ID**(如 `2010721655-DTcEHm2U`),但這個欄位要填的其實是**純數字的 Channel ID**(LIFF ID 前面那段數字,如 `2010721655`) | 回 Cloudflare Runtime secrets,把 `LIFF_CHANNEL_ID` 改成只有數字那段,重新測試(這個是 Runtime secret,改完立即生效不用重新 build) |
+| Supabase `inquiries` 表一直是空的,但 LIFF 表單顯示送出成功(或沒有明顯錯誤) | `wrangler.jsonc` 的 `SUPABASE_URL` 還是預留值 `https://YOUR-PROJECT-REF.supabase.co`,從沒換成真的 project ref | 去 Supabase Dashboard 網址列或 Project Settings → API 複製真正的 Project URL,改掉 `wrangler.jsonc` 裡的值,commit + push 觸發重新部署 |
+| 上線一段時間後,bot 突然完全失靈、表單也送不出去,但前一陣子都正常 | Supabase Free 專案「一週沒有流量會自動暫停」 | 用 `wrangler.jsonc` 的 `triggers.crons` + `worker/index.js` 的 `scheduled` handler 每天保活 ping 一次(見第 7 節);正式簽約案子建議報價時把 Free/Pro 的差異講清楚 |
 
 ## 已知限制與誠實聲明
 
